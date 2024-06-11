@@ -1,8 +1,5 @@
-// https://google.github.io/comprehensive-rust/borrowing/exercise.html
+// https://google.github.io/comprehensive-rust/borrowing/solution.html
 
-// TODO: remove this when you're done with your implementation.
-#![allow(unused_variables, dead_code)]
-#![allow(dead_code)]
 pub struct User {
     name: String,
     age: u32,
@@ -35,7 +32,20 @@ impl User {
     }
 
     pub fn visit_doctor(&mut self, measurements: Measurements) -> HealthReport {
-        todo!("Update a user's statistics based on measurements from a visit to the doctor")
+        let bp = measurements.blood_pressure;
+        let blood_pressure_change = self
+            .last_blood_pressure
+            .map(|lbp| (bp.0 as i32 - lbp.0 as i32, bp.1 as i32 - lbp.1 as i32));
+
+        self.height = measurements.height;
+        self.last_blood_pressure = Some(measurements.blood_pressure);
+        self.visit_count += 1;
+        HealthReport {
+            patient_name: &self.name,
+            visit_count: self.visit_count as u32,
+            height_change: self.height - measurements.height,
+            blood_pressure_change,
+        }
     }
 }
 
